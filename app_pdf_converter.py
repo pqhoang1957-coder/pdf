@@ -60,7 +60,7 @@ if st.button("Chuyển Đổi và Phân Tích Tài Liệu"):
         try:
             # 1. Tải file lên API Gemini (Không dùng mime_type để tránh lỗi cú pháp)
             st.info("Đang tải file lên máy chủ Gemini để phân tích...")
-            file = client.files.upload(file=uploaded_file)
+            file = client.files.upload(file=uploaded_file, mime_type="application/pdf")
             
             # 2. Xây dựng nội dung (Prompt + File)
             full_prompt_contents = [
@@ -89,3 +89,4 @@ if st.button("Chuyển Đổi và Phân Tích Tài Liệu"):
             if file is not None:
                 client.files.delete(name=file.name)
                 st.success("Đã dọn dẹp file tạm trên máy chủ Gemini.")
+
