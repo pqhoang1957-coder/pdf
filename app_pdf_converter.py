@@ -36,12 +36,12 @@ Toàn bộ dữ liệu, số liệu và nội dung trong file là bí mật nộ
 # 3. GIAO DIỆN STREAMLIT VÀ GỌI API
 # ----------------------------------------------------
 
-st.title("📄 Trợ Lý Chuyển Đổi & Phân Tích PDF (VBI HCM)")
+st.title("📄 Trợ Lý Chuyển Đổi & Phân Tích PDF (VBI)")
 st.caption("Chuyên gia chuyển đổi tài liệu bảo hiểm sang văn bản/bảng biểu có thể chỉnh sửa.")
 
 # --- Hộp tải file PDF ---
 uploaded_file = st.file_uploader(
-    "Tải lên file PDF chứa dữ liệu ", 
+    "Tải lên file PDF chứa dữ liệu", 
     type=["pdf"]
 )
 
@@ -58,9 +58,13 @@ if st.button("Chuyển Đổi và Phân Tích Tài Liệu"):
         file = None
         
         try:
-            # 1. Tải file lên API Gemini (Không dùng mime_type để tránh lỗi cú pháp)
             st.info("Đang tải file lên máy chủ Gemini để phân tích...")
-            file = client.files.upload(file=uploaded_file, mime_type="application/pdf")
+            
+            # SỬA LỖI: Khắc phục lỗi 'Unknown mime type' bằng cách chỉ định rõ loại file
+            file = client.files.upload(
+                file=uploaded_file,
+                mime_type="application/pdf" # <-- Khai báo rõ ràng loại file
+            )
             
             # 2. Xây dựng nội dung (Prompt + File)
             full_prompt_contents = [
@@ -73,7 +77,7 @@ if st.button("Chuyển Đổi và Phân Tích Tài Liệu"):
             response = client.models.generate_content(
                 model='gemini-2.5-pro', 
                 contents=full_prompt_contents,
-                config={"temperature": 0.0} # Nhiệt độ 0.0 để đảm bảo độ chính xác cao nhất
+                config={"temperature": 0.0}
             )
             
             # 4. Hiển thị kết quả trên giao diện web
